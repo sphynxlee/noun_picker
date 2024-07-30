@@ -22,6 +22,9 @@
             "matches": [
                 "https://developer.chrome.com/docs/extensions/*"
             ],
+            "css": [
+                "styles/styles.css"
+            ],
             "js": [
                 "scripts/content.js"
             ]
