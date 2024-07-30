@@ -17,18 +17,20 @@ pinButton.classList.add('pin-button');
 
 // Create and show the word count popup
 function showWordCountPopup(text, x, y) {
-    // Check if popup exists; if not, create it
     if (!wordCountPopup) {
         wordCountPopup = document.createElement('div');
         wordCountPopup.classList.add('word-count-popup');
         document.body.appendChild(wordCountPopup);
     }
-    // Update the word count text
-    wordCountPopup.textContent = `Word Count: ${text.split(/\s+/).filter(word => word.length > 0).length}`;
-    // Set the position of the popup
+
+    // Word counting logic that focuses only on words
+    const words = text.match(/\b\w+\b/g);  // Matches sequences of word characters
+    words.splice(-3);
+    const wordCount = words ? words.length : 0;
+
+    wordCountPopup.textContent = `Word Count: ${wordCount}`;
     wordCountPopup.style.left = `${x}px`;
     wordCountPopup.style.top = `${y}px`;
-    // Display the popup
     wordCountPopup.style.display = 'block';
 }
 
