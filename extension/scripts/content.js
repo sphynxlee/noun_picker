@@ -1,6 +1,10 @@
 let currentHighlightedParagraph = null;
 let previouslyUnderlinedParagraph = null;
 let wordCountPopup = null;
+// localhost
+// const backendUrl = 'http://localhost:5000/process';
+// PythonAnywhere
+const backendUrl = 'https://kaitonri.pythonanywhere.com/process';
 
 // Create the buttons once and reuse them
 const selectButton = document.createElement('button');
@@ -57,7 +61,7 @@ function onPinButtonClick() {
     const parentParagraph = pinButton.parentElement;
     if (parentParagraph && parentParagraph.tagName === 'P') {
         // Pin text and send to backend
-        fetch('http://localhost:5000/process', {
+        fetch(backendUrl, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
