@@ -1,5 +1,5 @@
-// Track the currently highlighted paragraph and popup
 let currentHighlightedParagraph = null;
+let previouslyUnderlinedParagraph = null;
 let wordCountPopup = null;
 
 // Create the buttons once and reuse them
@@ -24,7 +24,6 @@ function showWordCountPopup(text, x, y) {
     wordCountPopup.style.display = 'block';
 }
 
-// Handle selectButton clicks
 function onSelectButtonClick() {
     const parentParagraph = selectButton.parentElement;
     if (parentParagraph && parentParagraph.tagName === 'P') {
@@ -54,7 +53,6 @@ function onSelectButtonClick() {
     }
 }
 
-// Function to handle pinButton clicks
 function onPinButtonClick() {
     const parentParagraph = pinButton.parentElement;
     if (parentParagraph && parentParagraph.tagName === 'P') {
@@ -68,32 +66,70 @@ function onPinButtonClick() {
         })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
+                console.log('Processed text:', data);
+                if (data.noun_phrases) {
+                    // Remove  previous paragraph underlining
+                    if (previouslyUnderlinedParagraph && previouslyUnderlinedParagraph !== parentParagraph) {
+                        resetParagraphFormatting(previouslyUnderlinedParagraph);
+                    }
+
+                    // Underline the current paragraph
+                    underlineNounPhrases(parentParagraph, data.noun_phrases);
+
+                    // Update the previously underlined paragraph
+                    previouslyUnderlinedParagraph = parentParagraph;
+                }
             });
     }
+}
+
+function underlineNounPhrases(paragraph, nounPhrases) {
+    let paragraphHTML = paragraph.innerHTML;
+
+    // Sort noun phrases by length, descending, to avoid partial matching issues
+    nounPhrases.sort((a, b) => b.length - a.length);
+
+    nounPhrases.forEach(phrase => {
+        // Create a regular expression for the phrase, ensuring full-word match
+        const regex = new RegExp(`\\b(${phrase})\\b`, 'g');
+        paragraphHTML = paragraphHTML.replace(regex, '<span class="underline">$1</span>');
+    });
+
+    paragraph.innerHTML = paragraphHTML;
+}
+
+// Reset paragraph formatting to remove underlines
+function resetParagraphFormatting(paragraph) {
+    // Remove any span elements with the underline class and restore original text
+    paragraph.innerHTML = paragraph.textContent;
 }
 
 // Attach event listeners to buttons
 selectButton.addEventListener('click', onSelectButtonClick);
 pinButton.addEventListener('click', onPinButtonClick);
 
-// Event listener for mouseover on the document
 document.addEventListener('mouseover', function (event) {
     if (event.target.tagName === 'P') {
-        // Move the buttons to the new paragraph
-        event.target.appendChild(selectButton);
-        event.target.appendChild(pinButton);
+        if (selectButton.parentElement !== event.target) {
+            event.target.appendChild(selectButton);
+            event.target.appendChild(pinButton);
 
-        // Update the selectButton text based on the currently highlighted paragraph
-        if (currentHighlightedParagraph === event.target) {
-            selectButton.textContent = 'Unselect Text';
-        } else {
-            selectButton.textContent = 'Select Text';
+            if (currentHighlightedParagraph === event.target) {
+                selectButton.textContent = 'Unselect Text';
+            } else {
+                selectButton.textContent = 'Select Text';
+            }
+
+            // If moving to a new paragraph, reset previous underlining if necessary
+            if (previouslyUnderlinedParagraph && previouslyUnderlinedParagraph !== event.target) {
+                resetParagraphFormatting(previouslyUnderlinedParagraph);
+                previouslyUnderlinedParagraph = null; // Clear the reference since the underlining is removed
+            }
         }
     }
 });
 
-// Clean up on page unload to prevent potential memory leaks
+// Clean everything to prevent potential memory leaks
 window.addEventListener('unload', function () {
     selectButton.removeEventListener('click', onSelectButtonClick);
     pinButton.removeEventListener('click', onPinButtonClick);

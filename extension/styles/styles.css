@@ -1,3 +1,7 @@
+.underline {
+    text-decoration: underline;
+}
+
 .word-count-popup {
     position: absolute;
     background-color: #333;
