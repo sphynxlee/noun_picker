@@ -17,14 +17,18 @@ pinButton.classList.add('pin-button');
 
 // Create and show the word count popup
 function showWordCountPopup(text, x, y) {
+    // Check if popup exists; if not, create it
     if (!wordCountPopup) {
         wordCountPopup = document.createElement('div');
         wordCountPopup.classList.add('word-count-popup');
         document.body.appendChild(wordCountPopup);
     }
+    // Update the word count text
     wordCountPopup.textContent = `Word Count: ${text.split(/\s+/).filter(word => word.length > 0).length}`;
+    // Set the position of the popup
     wordCountPopup.style.left = `${x}px`;
     wordCountPopup.style.top = `${y}px`;
+    // Display the popup
     wordCountPopup.style.display = 'block';
 }
 
@@ -129,6 +133,10 @@ document.addEventListener('mouseover', function (event) {
                 resetParagraphFormatting(previouslyUnderlinedParagraph);
                 previouslyUnderlinedParagraph = null; // Clear the reference since the underlining is removed
             }
+
+            // Show word count popup for the new paragraph
+            const rect = event.target.getBoundingClientRect();
+            showWordCountPopup(event.target.textContent, rect.right + 10, rect.top);
         }
     }
 });
