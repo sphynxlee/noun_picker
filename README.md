@@ -14,10 +14,15 @@ A Chrome extension is used for highlighting noun phrases.
 4. Click on `Load unpacked` and select the cloned repository
 5. The extension is now installed
 
-## Backend Installation
+## Backend Installation (running on localhost)
 1. Install the dependencies, `spacy`, `flask`, and `flask_cors`
 2. Run the backend server using `python3 app.py`
 3. The server is now running on `http://localhost:5000`
+
+## Backend Installation (running on PythonAnywhere)
+1. I had created an online webapp  on PythonAnywhere to host the backend server.
+2. Check this [https://kaitonri.pythonanywhere.com/](https://kaitonri.pythonanywhere.com/) to see the server running.
+3. Utilize the postman to test the server API as 'screenshots/pythonanywhere_spacy.png' screenshot shows.
 
 ## After setting up the extension and backend
 1. pin the extension to the browser
@@ -26,17 +31,17 @@ A Chrome extension is used for highlighting noun phrases.
 
 
 ## Screenshots
-![Screenshot](./spacy.png)
+![Screenshot](./screenshots/spacy.png)
 This is a sceenshot of testing the spacy model on the backend server.
 
-![Screenshot](./select_text.png)
+![Screenshot](./screenshots/select_text.png)
 This is a screenshot of selecting text on the browser.
 
-![Screenshot](./noun_phrases.png)
+![Screenshot](./screenshots/noun_phrases.png)
 This is a screenshot of the underline to the noun phrases on the browser.
 
-![Screenshot](./pythonanywhere_spacy.png)
+![Screenshot](./screenshots/pythonanywhere_spacy.png)
 This is a screenshot of the spacy model running on the pythonanywhere server.
 
-![Screenshot](./pythonanywhere_select_text.png)
+![Screenshot](./screenshots/pythonanywhere_select_text.png)
 Utilizing the spacy model on the pythonanywhere server to select text on the browser.
