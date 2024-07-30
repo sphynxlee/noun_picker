@@ -1,16 +1,30 @@
-// Track the currently highlighted paragraph
+// Track the currently highlighted paragraph and popup
 let currentHighlightedParagraph = null;
+let wordCountPopup = null;
 
 // Create the buttons once and reuse them
 const selectButton = document.createElement('button');
 selectButton.textContent = 'Select Text';
-selectButton.classList.add('select-button'); // Add a class for styling or querying
+selectButton.classList.add('select-button');
 
 const pinButton = document.createElement('button');
 pinButton.textContent = 'Pin Text';
-pinButton.classList.add('pin-button'); // Add a class for styling or querying
+pinButton.classList.add('pin-button');
 
-// Function to handle selectButton clicks
+// Create and show the word count popup
+function showWordCountPopup(text, x, y) {
+    if (!wordCountPopup) {
+        wordCountPopup = document.createElement('div');
+        wordCountPopup.classList.add('word-count-popup');
+        document.body.appendChild(wordCountPopup);
+    }
+    wordCountPopup.textContent = `Word Count: ${text.split(/\s+/).filter(word => word.length > 0).length}`;
+    wordCountPopup.style.left = `${x}px`;
+    wordCountPopup.style.top = `${y}px`;
+    wordCountPopup.style.display = 'block';
+}
+
+// Handle selectButton clicks
 function onSelectButtonClick() {
     const parentParagraph = selectButton.parentElement;
     if (parentParagraph && parentParagraph.tagName === 'P') {
@@ -19,6 +33,7 @@ function onSelectButtonClick() {
             parentParagraph.style.backgroundColor = '';
             currentHighlightedParagraph = null;
             selectButton.textContent = 'Select Text';
+            if (wordCountPopup) wordCountPopup.style.display = 'none';
         } else {
             // Remove highlight from the previous paragraph
             if (currentHighlightedParagraph) {
@@ -31,6 +46,10 @@ function onSelectButtonClick() {
             // Update the current highlighted paragraph
             currentHighlightedParagraph = parentParagraph;
             selectButton.textContent = 'Unselect Text';
+
+            // Show word count popup
+            const rect = parentParagraph.getBoundingClientRect();
+            showWordCountPopup(parentParagraph.textContent, rect.right + 10, rect.top);
         }
     }
 }
@@ -49,7 +68,6 @@ function onPinButtonClick() {
         })
             .then(response => response.json())
             .then(data => {
-                // Display processed data (e.g., underlined noun phrases)
                 console.log(data);
             });
     }
@@ -65,6 +83,13 @@ document.addEventListener('mouseover', function (event) {
         // Move the buttons to the new paragraph
         event.target.appendChild(selectButton);
         event.target.appendChild(pinButton);
+
+        // Update the selectButton text based on the currently highlighted paragraph
+        if (currentHighlightedParagraph === event.target) {
+            selectButton.textContent = 'Unselect Text';
+        } else {
+            selectButton.textContent = 'Select Text';
+        }
     }
 });
 
@@ -72,4 +97,8 @@ document.addEventListener('mouseover', function (event) {
 window.addEventListener('unload', function () {
     selectButton.removeEventListener('click', onSelectButtonClick);
     pinButton.removeEventListener('click', onPinButtonClick);
+    if (wordCountPopup) {
+        document.body.removeChild(wordCountPopup);
+        wordCountPopup = null;
+    }
 });
