@@ -120,7 +120,14 @@ pinButton.addEventListener('click', onPinButtonClick);
 
 document.addEventListener('mouseover', function (event) {
     if (event.target.tagName === 'P') {
+        // Remove any existing selectButton and pinButton
         if (selectButton.parentElement !== event.target) {
+            const existingSelectButton = event.target.querySelector('.select-button');
+            const existingPinButton = event.target.querySelector('.pin-button');
+            if (existingSelectButton) existingSelectButton.remove();
+            if (existingPinButton) existingPinButton.remove();
+
+            // Move the buttons to the new paragraph
             event.target.appendChild(selectButton);
             event.target.appendChild(pinButton);
 
